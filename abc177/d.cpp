@@ -1,0 +1,85 @@
+#include <algorithm>
+#include <cmath>
+#include <deque>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <vector>
+
+#define pb push_back
+#define rep(i, n) for (int i = 0; i < (n); i++)
+#define reps(i, n, s) for (int i = (s); i < (n); i++)
+#define rrep(i, n) for (int i = (n - 1); i >= 0; i--)
+#define rreps(i, n, s) for (int i = s; i >= n; i--)
+template <class T> bool chmax(T& a, const T& b) {
+    if (a < b) {
+        a = b;
+        return 1;
+    }
+    return 0;
+}
+template <class T> bool chmin(T& a, const T& b) {
+    if (a > b) {
+        a = b;
+        return 1;
+    }
+    return 0;
+}
+
+using ll = long long;
+using namespace std;
+constexpr long long MAX = 5100000;
+constexpr long long INF = 1LL << 60;
+constexpr int MOD = 1000000007;
+template <typename T> struct UnionFind {
+    vector<T> _parent;
+    vector<T> _size;
+    UnionFind(T N) : _parent(N), _size(N, (T)1) { rep(i, N) _parent[i] = i; }
+
+    void init(T N) {
+        _parent.resize(N);
+        _size.assign(N, (T)1);
+        rep(i, N) _parent[i] = i;
+    }
+
+    T root(T x) {
+        if (_parent[x] == x) return x;
+        return _parent[x] = root(_parent[x]);
+    }
+
+    T size(T x) { return _size[root(x)]; }
+    bool same(T x, T y) {
+        T rx = root(x);
+        T ry = root(y);
+        return rx == ry;
+    }
+    bool unite(T x, T y) {
+        T rx = root(x);
+        T ry = root(y);
+        if (rx == ry) return false;
+        if (_size[rx] > _size[ry]) { swap(rx, ry); }
+        if (_size[rx] == _size[ry]) { _size[ry]++; }
+        _parent[rx] = ry;
+        return true;
+    }
+};
+int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+    ll n, m;
+    cin >> n >> m;
+    UnionFind<ll> uf(n);
+    rep(i, m) {
+        ll a, b;
+        cin >> a >> b;
+        a--, b--;
+        uf.unite(a, b);
+    }
+    ll res = 0;
+    rep(i, n) { res = max(res, uf._size[i]); }
+    cout << res << endl;
+    return 0;
+}
