@@ -21,7 +21,7 @@ using ll = long long;
 using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
-constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
 class mint {
     long long x;
 
@@ -76,23 +76,25 @@ int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
     ll n;
-    string s;
-    cin >> n >> s;
-    map<char, int> d;
-    string t = "atcoder";
-    rep(i, t.size()) d[t[i]] = i + 1;
-    vector<vector<mint>> dp(n + 1, vector<mint>(t.size(), 0));
+    cin >> n;
+    vector<ll> a(n), b(n);
     rep(i, n) {
-        int c = d[s[i]] - 1;
-        if (c >= 0) {
-            if (c == 0) {
-                dp[i + 1][c] += 1;
-            } else {
-                dp[i + 1][c] += dp[i][c - 1];
-            }
-        }
-        rep(j, t.size()) { dp[i + 1][j] += dp[i][j]; }
+        cin >> a[i];
+        a[i] += 1;
     }
-    cout << dp[n][t.size() - 1] << endl;
+    rep(i, n) {
+        cin >> b[i];
+        b[i] += 1;
+    }
+    vector<vector<mint>> dp(n, vector<mint>(3005, 0));
+
+    reps(v, b[0] + 1, a[0]) dp[0][v] = 1;
+    rep(v, 3001) dp[0][v + 1] += dp[0][v];
+    reps(i, n, 1) {
+        reps(v, b[i] + 1, a[i]) { dp[i][v] = dp[i - 1][v] - dp[i - 1][a[i - 1] - 1]; }
+        rep(v, 3001) dp[i][v + 1] += dp[i][v];
+    }
+    mint res = dp[n - 1][b[n - 1]] - dp[n - 1][a[n - 1] - 1];
+    cout << res << endl;
     return 0;
 }

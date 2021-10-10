@@ -21,7 +21,10 @@ using ll = long long;
 using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
-constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
+ll n, m, k;
+vector<vector<ll>> g;
+vector<ll> depth;
 class mint {
     long long x;
 
@@ -72,27 +75,77 @@ class mint {
         return os;
     }
 };
+void dfs(ll crr, ll from, ll d) {
+    depth[crr] = d;
+    for (auto to : g[crr]) {
+        if (to == from) continue;
+        dfs(to, crr, d + 1);
+    }
+}
+vector<ll> get_path(int start, int goal) {
+    vector<ll> path(n, -1);
+    queue<pair<ll, ll>> q;
+    q.push({start, -1});
+    while (!q.empty()) {
+        ll crr = q.front().first;
+        ll from = q.front().second;
+        q.pop();
+        if (path[crr] >= 0) continue;
+        path[crr] = from;
+        if (crr == goal) break;
+        for (ll to : g[crr]) { q.push({to, crr}); }
+    }
+    vector<ll> res;
+    ll crr = goal;
+    while (crr != start) {
+        if (depth[crr] < depth[path[crr]]) {
+            res.pb(path[crr]);
+        } else {
+            res.pb(crr);
+        }
+        crr = path[crr];
+    }
+    return res;
+}
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll n;
-    string s;
-    cin >> n >> s;
-    map<char, int> d;
-    string t = "atcoder";
-    rep(i, t.size()) d[t[i]] = i + 1;
-    vector<vector<mint>> dp(n + 1, vector<mint>(t.size(), 0));
-    rep(i, n) {
-        int c = d[s[i]] - 1;
-        if (c >= 0) {
-            if (c == 0) {
-                dp[i + 1][c] += 1;
-            } else {
-                dp[i + 1][c] += dp[i][c - 1];
-            }
-        }
-        rep(j, t.size()) { dp[i + 1][j] += dp[i][j]; }
+    cin >> n >> m >> k;
+    vector<ll> a(m);
+    rep(i, m) {
+        cin >> a[i];
+        a[i]--;
     }
-    cout << dp[n][t.size() - 1] << endl;
+    g.resize(n);
+    depth.resize(n, 0);
+    rep(i, n - 1) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        g[u].pb(v);
+        g[v].pb(u);
+    }
+    dfs(0, -1, 0);
+    map<ll, ll> pathlist;
+    rep(i, m - 1) {
+        vector<ll> path = get_path(a[i], a[i + 1]);
+        for (auto v : path) { pathlist[v]++; }
+    }
+    vector<vector<mint>> dp(n + 1, vector<mint>(100005, 0));
+    dp[1][0] = 1;
+    ll sum = 0;
+    reps(i, n, 1) {
+        ll v = pathlist[i];
+        rep(j, 100005) {
+            if (j - v >= 0) { dp[i + 1][j] += dp[i][j - v]; }
+            dp[i + 1][j] += dp[i][j];
+        }
+        sum += v;
+    }
+    mint res = 0;
+    rep(j, sum + 1) {
+        if (j - (sum - j) == k) { res += dp[n][j]; }
+    }
+    cout << res << endl;
     return 0;
 }
