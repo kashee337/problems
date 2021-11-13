@@ -26,27 +26,29 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
+    ll n;
+    cin >> n;
+    vector<string> w(n);
+    map<string, int> a;
+    string res = "DRAW";
+    rep(i, n) { cin >> w[i]; }
+    char last = w[0][0];
+    rep(i, n) {
+        char first = w[i][0];
+        if (i % 2 == 0) {
+            if (a.count(w[i]) || last != first) {
+                res = "LOSE";
+                break;
             }
+            a[w[i]]++;
         } else {
-            res = -1;
-            break;
+            if (a.count(w[i]) || last != first) {
+                res = "WIN";
+                break;
+            }
+            a[w[i]]++;
         }
+        last = w[i][w[i].size() - 1];
     }
     cout << res << endl;
     return 0;

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -21,31 +22,33 @@ using ll = long long;
 using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
-constexpr int MOD = 1000000007;
-
+constexpr int MOD = 998244353;
+ll modPow(ll a, ll n, ll mod) {
+    ll res = 1;
+    while (n > 0) {
+        if (n & 1) res = res * a % mod;
+        a = a * a % mod;
+        n >>= 1;
+    }
+    return res;
+}
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
+    ll n;
+    cin >> n;
+    vector<ll> d(n);
+    map<ll, ll> depth;
+    rep(i, n) {
+        cin >> d[i];
+        depth[d[i]]++;
+    }
     ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
+    if (d[0] == 0 && depth[0] == 1) {
+        res = 1;
+        reps(i, n, 1) {
+            ll val = modPow(depth[i - 1], depth[i], MOD);
+            res = (res * val) % MOD;
         }
     }
     cout << res << endl;

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,28 +27,30 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
+    ll r1, c1, r2, c2;
+    cin >> r1 >> c1 >> r2 >> c2;
+    ll dr = r2 - r1, dc = c2 - c1;
+    if (dr == 0 && dc == 0) {
+        cout << 0 << endl;
+    } else if (abs(dr) == abs(dc) || (abs(dr) + abs(dc) <= 3)) {
+        cout << 1 << endl;
+    } else if (abs(dr) % 2 == abs(dc) % 2) {
+        cout << 2 << endl;
+    } else {
+        ll r3, c3;
+
+        if (dr == 0 || dc == 0) {
+            r3 = r1, c3 = c1;
         } else {
-            res = -1;
-            break;
+            r3 = r1 + dr, c3 = c1 + abs(dr) * (dc / abs(dc));
+        }
+        ll dr2 = r2 - r3, dc2 = c2 - c3;
+
+        if ((abs(dr2) + abs(dc2) <= 3) || (abs(dr) + abs(dc) <= 6)) {
+            cout << 2 << endl;
+        } else {
+            cout << 3 << endl;
         }
     }
-    cout << res << endl;
     return 0;
 }

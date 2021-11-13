@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,6 +27,29 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-
+    ll n, m;
+    cin >> n >> m;
+    string name, kit;
+    cin >> name >> kit;
+    map<char, int> memo1, memo2;
+    for (char c : name) {
+        memo1[c]++;
+        memo2[c] = 0;
+    }
+    for (char c : kit) memo2[c]++;
+    int res = 1;
+    for (auto v : memo1) {
+        char c = v.first;
+        int n1 = v.second;
+        int n2 = memo2[c];
+        if (n2 == 0) {
+            res = -1;
+            break;
+        }
+        int num = n1 / n2;
+        if (n1 % n2 != 0) num++;
+        res = max(res, num);
+    }
+    cout << res << endl;
     return 0;
 }

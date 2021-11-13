@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,6 +27,17 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-
+    ll n;
+    cin >> n;
+    vector<ll> a(n);
+    rep(i, n) cin >> a[i];
+    map<ll, ll> b;
+    rep(i, n) b[i - a[i]]++;
+    ll res = 0;
+    rep(i, n) {
+        res += b[a[i] + i];
+        if (a[i] + i == i - a[i]) res--;
+    }
+    cout << res << endl;
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -22,31 +23,35 @@ using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
 constexpr int MOD = 1000000007;
+vector<ll> t, k;
+vector<vector<ll>> a;
+ll res = 0;
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
+    ll n;
+    cin >> n;
+    t.resize(n), k.resize(n);
+    a.resize(n);
+    rep(i, n) {
+        cin >> t[i] >> k[i];
+        a[i].resize(k[i]);
+        rep(j, k[i]) {
+            cin >> a[i][j];
+            a[i][j]--;
         }
+    }
+    stack<ll> st;
+    st.push(n - 1);
+    vector<bool> use(n, false);
+    while (!st.empty()) {
+        int crr = st.top();
+        st.pop();
+        if (use[crr]) continue;
+        use[crr] = true;
+        for (auto next : a[crr]) { st.push(next); }
+        res += t[crr];
     }
     cout << res << endl;
     return 0;

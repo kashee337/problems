@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,27 +27,18 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
+    ll n, k;
+    cin >> n >> k;
     ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
+    reps(b, n + 1, k + 1) {
+        if (b == 1) {
+            res++;
+            continue;
         }
+        ll per_cycle = b - k;
+        ll cycle_num = n / b;
+        ll d = n % b;
+        res += per_cycle * cycle_num + max(0LL, d - k + 1);
     }
     cout << res << endl;
     return 0;

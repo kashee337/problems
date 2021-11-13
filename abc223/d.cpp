@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,28 +27,36 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
-        }
+    ll n, m;
+    cin >> n >> m;
+    vector<ll> indeg(n, 0);
+    map<ll, vector<ll>> g;
+    rep(i, m) {
+        ll a, b;
+        cin >> a >> b;
+        a--, b--;
+        g[a].pb(b);
+        indeg[b]++;
     }
-    cout << res << endl;
+    priority_queue<ll> pq;
+    rep(i, n) {
+        if (indeg[i] == 0) pq.push(-i);
+    }
+    vector<ll> res;
+    while (!pq.empty()) {
+        ll v = -pq.top();
+        pq.pop();
+
+        for (auto u : g[v]) {
+            indeg[u]--;
+            if (indeg[u] == 0) pq.push(-u);
+        }
+        res.pb(v);
+    }
+    if (res.size() == n) {
+        for (auto v : res) { cout << v + 1 << " "; }
+    } else {
+        cout << -1;
+    }
     return 0;
 }

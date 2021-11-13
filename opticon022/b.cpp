@@ -26,6 +26,10 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-
+    ll n, k;
+    cin >> n >> k;
+    ll res = k;
+    rep(i, n - 1) { res *= (k - 1LL); }
+    cout << res << endl;
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -22,32 +23,31 @@ using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
 constexpr int MOD = 1000000007;
-
+bool comp(pair<int, string> a, pair<int, string> b) {
+    if (a.first == b.first) {
+        return a.second < b.second;
+    } else {
+        return a.first > b.first;
+    }
+}
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
-        }
+    ll n;
+    cin >> n;
+    map<string, ll> s;
+    rep(i, n) {
+        string _s;
+        cin >> _s;
+        s[_s]++;
     }
-    cout << res << endl;
+    vector<pair<int, string>> res;
+    for (auto& p : s) { res.pb({p.second, p.first}); }
+    sort(res.begin(), res.end(), comp);
+    ll cnt = res[0].first;
+    for (auto v : res) {
+        if (v.first != cnt) break;
+        cout << v.second << endl;
+    }
     return 0;
 }

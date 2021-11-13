@@ -20,34 +20,34 @@
 using ll = long long;
 using namespace std;
 constexpr long long MAX = 5100000;
+
 constexpr long long INF = 1LL << 60;
 constexpr int MOD = 1000000007;
+constexpr long long MAX_N = 10000010;
+
+long long sieve[MAX_N];
+
+void eratosthenes() {
+    for (int i = 0; i < MAX_N; i++) sieve[i] = i;
+    for (int i = 2; i * i < MAX_N; i++) {
+        if (sieve[i] < i) continue;
+        for (int j = i * i; j < MAX_N; j += i) {
+            if (sieve[j] == j) sieve[j] = i;
+        }
+    }
+}
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
-        }
+    eratosthenes();
+
+    ll n;
+    cin >> n;
+    vector<vector<ll>> memo(5);
+    reps(v, 55555 + 1, 2) {
+        if (sieve[v] == v) memo[v % 5].pb(v);
     }
-    cout << res << endl;
+    rep(i, n) { cout << memo[1][i] << endl; }
     return 0;
 }

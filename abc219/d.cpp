@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,28 +27,26 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
+    ll n;
+    cin >> n;
+    ll x, y;
+    cin >> x >> y;
+    vector<ll> a(n), b(n);
+    rep(i, n) cin >> a[i] >> b[i];
+    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(y + 1, vector<ll>(x + 1, INF)));
+    dp[0][0][0] = 0;
+    rep(i, n) {
+        rep(_x, x + 1) {
+            rep(_y, y + 1) {
+                ll nx = _x + a[i], ny = _y + b[i];
+                nx = min(nx, x);
+                ny = min(ny, y);
+                dp[i + 1][ny][nx] = min(dp[i + 1][ny][nx], dp[i][_y][_x] + 1);
+                dp[i + 1][_y][_x] = min(dp[i + 1][_y][_x], dp[i][_y][_x]);
             }
-        } else {
-            res = -1;
-            break;
         }
     }
-    cout << res << endl;
+    ll res = dp[n][y][x];
+    cout << (res >= INF ? -1 : res) << endl;
     return 0;
 }

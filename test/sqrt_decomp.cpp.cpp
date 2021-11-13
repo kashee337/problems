@@ -26,28 +26,14 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    string s, t;
-    cin >> s >> t;
-    map<char, vector<int>> memo;
-    rep(i, s.size()) { memo[s[i]].pb(i); }
-    ll res = 0;
-    ll cur = -1;
-    for (char c : t) {
-        if (memo.count(c)) {
-            auto indice = memo[c];
-            int idx = upper_bound(indice.begin(), indice.end(), cur) - indice.begin();
-            if (idx == indice.size()) {
-                res += indice[0] + (s.size() - cur);
-                cur = indice[0];
-            } else {
-                res += indice[idx] - cur;
-                cur = indice[idx];
-            }
-        } else {
-            res = -1;
-            break;
-        }
-    }
-    cout << res << endl;
+    int n, m;
+    cin >> n >> m;
+    vector<ll> a(n);
+    rep(i, n) cin >> a[i];
+    int L = sqrt(n);
+    int B = n / L;
+    vector<vector<int>> bucket(B);
+    rep(i, n) bucket[i / L].push_back(a[i]);
     return 0;
 }
+void linear_assignment() {}
