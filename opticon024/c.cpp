@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,33 +27,28 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> a(n), f(n);
-    rep(i, n) cin >> a[i];
-    rep(i, n) cin >> f[i];
-    sort(a.begin(), a.end());
-    sort(f.begin(), f.end(), greater<ll>());
-    ll l = -1, r = 1e12 + 1LL;
-    while (l + 1 < r) {
-        ll mid = (l + r) / 2;
-
-        bool ok = true;
-        ll crr = 0;
-        rep(i, n) {
-            ll b = mid / f[i];
-            crr += max(0LL, a[i] - b);
-            if (crr > k) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
-            r = mid;
-        } else {
-            l = mid;
-        }
+    ll n, m;
+    cin >> n >> m;
+    vector<vector<int>> g(n);
+    rep(i, m) {
+        int a, b;
+        cin >> a >> b;
+        a--, b--;
+        g[a].pb(b);
+        g[b].pb(a);
     }
-    cout << r << endl;
+    vector<int> res(n, -1);
+    queue<pair<int, int>> q;
+    q.push({0, -1});
+    while (!q.empty()) {
+        int crr = q.front().first;
+        int from = q.front().second;
+        q.pop();
+        if (res[crr] != -1) continue;
+        res[crr] = from + 1;
+        for (int to : g[crr]) { q.push({to, crr}); }
+    }
+    cout << "Yes" << endl;
+    reps(i, n, 1) cout << res[i] << endl;
     return 0;
 }

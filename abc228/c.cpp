@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -28,31 +29,23 @@ int main() {
     ios::sync_with_stdio(false);
     ll n, k;
     cin >> n >> k;
-    vector<ll> a(n), f(n);
-    rep(i, n) cin >> a[i];
-    rep(i, n) cin >> f[i];
-    sort(a.begin(), a.end());
-    sort(f.begin(), f.end(), greater<ll>());
-    ll l = -1, r = 1e12 + 1LL;
-    while (l + 1 < r) {
-        ll mid = (l + r) / 2;
+    vector<ll> p(n);
+    ll p1, p2, p3;
+    rep(i, n) {
+        cin >> p1 >> p2 >> p3;
+        p[i] = p1 + p2 + p3;
+    }
+    vector<ll> order(p.begin(), p.end());
+    sort(order.begin(), order.end());
 
-        bool ok = true;
-        ll crr = 0;
-        rep(i, n) {
-            ll b = mid / f[i];
-            crr += max(0LL, a[i] - b);
-            if (crr > k) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
-            r = mid;
+    rep(i, n) {
+        int idx = upper_bound(order.begin(), order.end(), p[i] + 300) - order.begin();
+        int rank = n - idx + 1;
+        if (rank <= k) {
+            cout << "Yes" << endl;
         } else {
-            l = mid;
+            cout << "No" << endl;
         }
     }
-    cout << r << endl;
     return 0;
 }

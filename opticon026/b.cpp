@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -22,37 +23,34 @@ using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
 constexpr int MOD = 1000000007;
-
+ll modPow(ll a, ll _n, ll mod) {
+    ll res = 1;
+    ll n = _n;
+    while (n > 0) {
+        if (n & 1) res = res * a % mod;
+        a = a * a % mod;
+        n >>= 1;
+    }
+    return res;
+}
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> a(n), f(n);
-    rep(i, n) cin >> a[i];
-    rep(i, n) cin >> f[i];
-    sort(a.begin(), a.end());
-    sort(f.begin(), f.end(), greater<ll>());
-    ll l = -1, r = 1e12 + 1LL;
-    while (l + 1 < r) {
-        ll mid = (l + r) / 2;
-
-        bool ok = true;
-        ll crr = 0;
-        rep(i, n) {
-            ll b = mid / f[i];
-            crr += max(0LL, a[i] - b);
-            if (crr > k) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
-            r = mid;
-        } else {
-            l = mid;
-        }
+    ll a, b, c;
+    cin >> a >> b >> c;
+    map<ll, int> memo;
+    ll _a = a % 10;
+    ll tmp = _a;
+    vector<ll> cnt;
+    while (1) {
+        if (memo.count(tmp % 10)) { break; }
+        memo[tmp % 10] = 1;
+        cnt.pb(tmp % 10);
+        tmp *= _a;
     }
-    cout << r << endl;
+    ll mod = cnt.size();
+    ll idx = modPow(b, c, mod) - 1LL;
+    if (idx == -1) idx = mod - 1;
+    cout << cnt[idx] << endl;
     return 0;
 }

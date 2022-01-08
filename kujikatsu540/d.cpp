@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -26,33 +27,37 @@ constexpr int MOD = 1000000007;
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> a(n), f(n);
-    rep(i, n) cin >> a[i];
-    rep(i, n) cin >> f[i];
-    sort(a.begin(), a.end());
-    sort(f.begin(), f.end(), greater<ll>());
-    ll l = -1, r = 1e12 + 1LL;
-    while (l + 1 < r) {
-        ll mid = (l + r) / 2;
-
-        bool ok = true;
-        ll crr = 0;
-        rep(i, n) {
-            ll b = mid / f[i];
-            crr += max(0LL, a[i] - b);
-            if (crr > k) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
-            r = mid;
-        } else {
-            l = mid;
-        }
+    string s;
+    cin >> s;
+    ll res = INF;
+    set<char> cs;
+    int n = s.size();
+    rep(i, n) { cs.insert(s[i]); }
+    if(cs.size() == 1) {
+        cout << 0 << endl;
+        return 0;
     }
-    cout << r << endl;
+    for (char c : cs) {
+        ll tmp = 0;
+        bool ok = true;
+        string t = s;
+        while (ok) {
+            ok = false;
+            string td = "";
+            int m = t.size();
+            rep(i, m - 1) {
+                if (t[i] == c || t[i + 1] == c) {
+                    td += c;
+                } else {
+                    td += t[i];
+                    ok = true;
+                }
+            }
+            t = td;
+            tmp++;
+        }
+        res = min(res, tmp);
+    }
+    cout << res << endl;
     return 0;
-}
+    }

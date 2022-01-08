@@ -49,36 +49,42 @@ int main() {
     ll n, m;
     cin >> n >> m;
     g.resize(n);
+    int a, b;
     rep(i, m) {
-        int a, b;
         cin >> a >> b;
         a--, b--;
         g[a].pb(b);
         g[b].pb(a);
     }
-    int start;
-    int v = 3;
-    used.assign(n, false);
-    rep(i, n) {
-        if (g[i].size() == v) {
-            start = i;
-            v = g[i].size();
+    vector<bool> used(n, false);
+    deque<int> q;
+    q.push_back(a);
+    q.push_front(b);
+    used[a] = true;
+    used[b] = true;
+    bool updated = true;
+    while (updated) {
+        updated = false;
+        int a = q.front(), b = q.back();
+        for (int to : g[a]) {
+            if (used[to]) continue;
+            q.push_front(to);
+            used[to] = true;
+            updated = true;
+            break;
+        }
+        for (int to : g[b]) {
+            if (used[to]) continue;
+            q.push_back(to);
+            used[to] = true;
+            updated = true;
+            break;
         }
     }
-    if (v == 1) {
-        easy_dfs(-1, start);
-    } else {
-        from_nodes.resize(n);
-        int goal = g[start][1];
-        mid_dfs(goal, -1, start);
-        ll crr = from_nodes[goal];
-        res.pb(goal);
-        while (crr != -1) {
-            res.pb(crr);
-            crr = from_nodes[crr];
-        }
+    cout << q.size() << endl;
+    rep(i, q.size()) {
+        int v = q[i];
+        cout << v + 1 << endl;
     }
-    cout << res.size() << endl;
-    for (auto v : res) cout << v + 1 << endl;
     return 0;
 }

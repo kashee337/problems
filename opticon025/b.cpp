@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <set>
 #include <stack>
@@ -22,37 +23,30 @@ using namespace std;
 constexpr long long MAX = 5100000;
 constexpr long long INF = 1LL << 60;
 constexpr int MOD = 1000000007;
-
+ll h, w;
+vector<string> c;
+ll res = 0;
+int dx[2] = {0, 1}, dy[2] = {1, 0};
+vector<vector<ll>> used;
+void dfs(int x, int y, ll depth) {
+    res = max(res, depth);
+    used[y][x] = depth;
+    rep(i, 2) {
+        int nx = x + dx[i], ny = y + dy[i];
+        if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+        if (c[ny][nx] == '#') continue;
+        if (used[ny][nx] >= depth + 1) continue;
+        dfs(nx, ny, depth + 1);
+    }
+}
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> a(n), f(n);
-    rep(i, n) cin >> a[i];
-    rep(i, n) cin >> f[i];
-    sort(a.begin(), a.end());
-    sort(f.begin(), f.end(), greater<ll>());
-    ll l = -1, r = 1e12 + 1LL;
-    while (l + 1 < r) {
-        ll mid = (l + r) / 2;
-
-        bool ok = true;
-        ll crr = 0;
-        rep(i, n) {
-            ll b = mid / f[i];
-            crr += max(0LL, a[i] - b);
-            if (crr > k) {
-                ok = false;
-                break;
-            }
-        }
-        if (ok) {
-            r = mid;
-        } else {
-            l = mid;
-        }
-    }
-    cout << r << endl;
+    cin >> h >> w;
+    c.resize(h);
+    used.assign(h, vector<ll>(w, 0));
+    rep(i, h) cin >> c[i];
+    dfs(0, 0, 1);
+    cout << res << endl;
     return 0;
 }
